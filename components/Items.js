@@ -11,16 +11,27 @@ export default class Items extends Component {
     const {items} = this.state;
     return `
         <ul>
-          ${items.map(item => `<li>${item}</li>`).join('')}
+          ${items.map((item, idx)=> `
+            <li>
+              ${item}
+              <button type="button" class="deleteBtn" data-index="${idx}">삭제</button>
+            </li>`).join('')}
         </ul>
         <button type="button" class="addBtn">추가</button>
     `
   }
 
   setEvent() {
-    const {items} = this.state;
-    document.querySelector('.addBtn').addEventListener('click', () => {
-      this.setState({items : [...items, `item${items.length + 1}`]})
+    this.$target.addEventListener('click', ({target}) => {
+      const {items} = this.state;
+      if(target.classList.contains('addBtn')) {
+        this.setState({items : [...items, `item${items.length + 1}`]})
+      }
+
+      if(target.classList.contains('deleteBtn')) {
+        items.splice(target.dataset.index, 1);
+        this.setState({items})
+      }
     })
   }
 }

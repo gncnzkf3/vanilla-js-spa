@@ -5,13 +5,13 @@ export default class Component {
     this.$target = $target;
     this.setup();
     this.render();
+    this.setEvent(); 
   }
 
   setup() {}
   template() {return ``}
   render() {
     this.$target.innerHTML = this.template();
-    this.setEvent(); 
   }
   setEvent() {}
   setState(newState) {
