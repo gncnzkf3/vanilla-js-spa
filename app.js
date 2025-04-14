@@ -1,31 +1,52 @@
-// 기능구현
-// 상태가 변하면 dom이 변한다. 
-// state - setState - render
+// 추상화
 
 const $app = document.querySelector('#app');
 
-let state = {
-  items: ['item1', 'item2', 'item3', 'item4']
+class Component {
+  $target;
+  state;
+  constructor($target) {
+    this.$target = $target;
+    this.setup();
+    this.render();
+  }
+
+  setup() {}
+  template() {return ``}
+  render() {
+    this.$target.innerHTML = this.template();
+    this.setEvent(); 
+  }
+  setEvent() {}
+  setState(newState) {
+    this.state = {...this.state, ...newState}
+    this.render();
+  }
 }
 
-const render = () => {
-  const {items} = state;
+class App extends Component {
+  setup() {
+    this.state = {
+      items: ['item1', 'item2', 'item3', 'item4']
+    }
+  }
 
-  $app.innerHTML = `
-    <ul>
-      ${items.map(item => `<li>${item}</li>`).join('')}
-      <button type="button" class="addBtn">추가</button>
-    </ul>
-  `
+  template() {
+    const {items} = this.state;
+    return `
+        <ul>
+          ${items.map(item => `<li>${item}</li>`).join('')}
+        </ul>
+        <button type="button" class="addBtn">추가</button>
+    `
+  }
 
-  document.querySelector('.addBtn').addEventListener('click', () => {
-    setState({items : [...items, `item${items.length + 1}`]})
-  })
+  setEvent() {
+    const {items} = this.state;
+    document.querySelector('.addBtn').addEventListener('click', () => {
+      this.setState({items : [...items, `item${items.length + 1}`]})
+    })
+  }
 }
 
-const setState = (newState) => {
-  state = {...state, ...newState}
-  render();
-}
-
-render();
+const main = new App($app);
