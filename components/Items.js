@@ -1,30 +1,6 @@
-// 추상화
+import Component from "../core/Component.js";
 
-const $app = document.querySelector('#app');
-
-class Component {
-  $target;
-  state;
-  constructor($target) {
-    this.$target = $target;
-    this.setup();
-    this.render();
-  }
-
-  setup() {}
-  template() {return ``}
-  render() {
-    this.$target.innerHTML = this.template();
-    this.setEvent(); 
-  }
-  setEvent() {}
-  setState(newState) {
-    this.state = {...this.state, ...newState}
-    this.render();
-  }
-}
-
-class App extends Component {
+export default class Items extends Component {
   setup() {
     this.state = {
       items: ['item1', 'item2', 'item3', 'item4']
@@ -48,5 +24,3 @@ class App extends Component {
     })
   }
 }
-
-const main = new App($app);
