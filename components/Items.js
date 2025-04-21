@@ -3,35 +3,61 @@ import Component from "../core/Component.js";
 export default class Items extends Component {
   setup() {
     this.state = {
-      items: ['item1', 'item2', 'item3', 'item4']
-    }
+      items:[
+        {
+          id: 0, 
+          content: 'item1',
+          active: true, 
+        },
+        {
+          id: 1,
+          content: 'item2',
+          active: true,
+        }
+      ] 
+    } 
   }
 
   template() {
-    const {items} = this.state;
+    const listItem = this.state.items;
     return `
+        <input type="text" class="textInput" placeholder="아이템 내용 입력" />
         <ul>
-          ${items.map((item, idx)=> `
+          ${listItem.map(({id, content, active}) => (`
             <li>
-              ${item}
-              <button type="button" class="deleteBtn" data-index="${idx}">삭제</button>
-            </li>`).join('')}
+              ${content}  
+              <button type="button" class="toggleBtn" style="color: ${active ? `#09F` : `#F09`}">
+              ${active ? `활성` : `비활성` }
+              </button>
+              <button type="button" class="deleteBtn" data-index=${id}>삭제</button>
+            </li>
+            `)).join('')}
         </ul>
-        <button type="button" class="addBtn">추가</button>
+        <button type="button" class="filterBtn" data-filter="0">전체보기</button>
+        <button type="button" class="filterBtn" data-filter="1">활성보기</button>
+        <button type="button" class="filterBtn" data-filter="2">비활성보기</button>
     `
   }
 
   setEvent() {
-    this.$target.addEventListener('click', ({target}) => {
-      const {items} = this.state;
-      if(target.classList.contains('addBtn')) {
-        this.setState({items : [...items, `item${items.length + 1}`]})
-      }
 
-      if(target.classList.contains('deleteBtn')) {
-        items.splice(target.dataset.index, 1);
-        this.setState({items})
+    this.addEvent('keyup', '.textInput', (event) => {
+      const items = this.state.items;
+      if(event.key === 'Enter') {
+        this.setState({items : [...items, {
+          id : Math.max(...items.map(({id}) => (id))) + 1, 
+          content : event.target.value,
+          active: true,
+        }]})
       }
+    })
+
+    this.addEvent('click', '.deleteBtn', (event) => {
+      const items = this.state.items;
+
+      console.log(items.map(({id}) => id))
+      // items.splice(event.target.dataset.index, 1);
+      // this.setState({items})
     })
   }
 }
